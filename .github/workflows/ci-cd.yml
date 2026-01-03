@@ -36,14 +36,13 @@ jobs:
         cache: maven
 
     - name: Build with Maven
-      run: mvn clean install -DskipTests -U
+      run: mvn clean package -DskipTests
 
-    - name: Run tests
-      env:
-        DB_URL: jdbc:mysql://localhost:3306/albaraka_bank_test?createDatabaseIfNotExist=true
-        DB_USER: root
-        DB_PASSWORD: root
-      run: mvn test -DskipTests
+    - name: Upload JAR artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-jar
+        path: target/*.jar
 
   build-and-push-docker:
     needs: build-and-test
@@ -53,6 +52,12 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+
+    - name: Download JAR artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: app-jar
+        path: target
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
@@ -71,5 +76,3 @@ jobs:
         tags: |
           ${{ secrets.DOCKER_USERNAME }}/albaraka-bank:latest
           ${{ secrets.DOCKER_USERNAME }}/albaraka-bank:${{ github.sha }}
-        cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/albaraka-bank:buildcache
-        cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/albaraka-bank:buildcache,mode=max
