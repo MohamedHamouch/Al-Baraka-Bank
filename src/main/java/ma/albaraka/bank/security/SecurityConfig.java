@@ -41,7 +41,7 @@ public class SecurityConfig {
     @Order(1)
     public SecurityFilterChain oauth2SecurityFilterChain(HttpSecurity http) throws Exception {
         http
-                .securityMatcher("/api/agent/operations/pending")
+                .securityMatcher("/api/agent/operations/pending2")
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                 .anyRequest().hasAuthority("SCOPE_operations.read")

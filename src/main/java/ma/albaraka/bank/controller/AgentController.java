@@ -23,6 +23,12 @@ public class AgentController {
         return ResponseEntity.ok(operations);
     }
 
+    @GetMapping("/operations/pending2")
+    public ResponseEntity<List<OperationResponse>> getPendingOperations2() {
+        List<OperationResponse> operations = operationService.getPendingOperations();
+        return ResponseEntity.ok(operations);
+    }
+
     @GetMapping("/operations/{id}")
     public ResponseEntity<OperationResponse> getOperationById(@PathVariable Long id) {
         OperationResponse operation = operationService.getOperationById(id);
